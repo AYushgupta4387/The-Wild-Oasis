@@ -20,9 +20,12 @@ function UpdateSettingsForm() {
   const { isUpdating, updateSetting } = useUpdateSetting();
 
   const handleUpdate = function (e, field) {
-    const { value } = e.target;
+    const { value, defaultValue } = e.target;
 
-    if (!value) return;
+    if (isNaN(value) || !value || value === defaultValue) {
+      e.target.value = defaultValue;
+      return;
+    }
 
     updateSetting({
       [field]: value,

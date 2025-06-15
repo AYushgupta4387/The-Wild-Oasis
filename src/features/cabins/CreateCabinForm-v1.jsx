@@ -1,3 +1,5 @@
+/* CreateCabinForm before adding the editing functionality. */
+
 import { useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
@@ -31,6 +33,7 @@ function CreateCabinForm() {
     mutate({ ...data, image: data.image[0] });
   }
 
+  // eslint-disable-next-line no-unused-vars
   function onError(errors) {
     // console.log(errors);
   }

@@ -12,14 +12,16 @@ export async function getCabins() {
 }
 
 export async function createEditCabin(newCabin, id) {
-  // For images where we do not change the image file during edit, we will want to simply pass the existing image URL
-  const hasImagePath = newCabin.image?.startsWith?.(supabaseUrl);
-
   const imageName = `${Math.random()}-${newCabin.image.name}`.replaceAll(
     "/",
     ""
   );
 
+  // Check if the image path already starts with the Supabase URL.
+  // This is to determine if we are editing an existing cabin with an image already uploaded.
+  const hasImagePath = newCabin.image?.startsWith?.(supabaseUrl);
+
+  // If we do not change the image file during edit, we will simply pass the existing image URL.
   const imagePath = hasImagePath
     ? newCabin.image
     : `${supabaseUrl}/storage/v1/object/public/cabin-images/${imageName}`;
@@ -28,7 +30,7 @@ export async function createEditCabin(newCabin, id) {
   let query = supabase.from("cabins");
 
   // A) CREATE
-  if (!id) query = query.insert([{ ...newCabin, image: imagePath }]);
+  if (!id) query = query.insert([{ ...newCabin, image: imagePath }]); // This is in an array because Supabase expects an array of objects for insertions.
 
   // B) EDIT
   if (id) query = query.update({ ...newCabin, image: imagePath }).eq("id", id);
@@ -40,7 +42,8 @@ export async function createEditCabin(newCabin, id) {
     throw new Error("Cabin could not be create.");
   }
 
-  // Early return if we don't want to modify the image
+  // Early return if we don't want to modify the image to prevent uploading it again.
+  // This is useful when editing a cabin or duplicating a cabin and not changing the image.
   if (hasImagePath) return data;
 
   // 2. Upload Image
