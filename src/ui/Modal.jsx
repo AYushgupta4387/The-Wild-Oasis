@@ -1,7 +1,11 @@
+/* Implementing Compound component pattern */
+
+import { cloneElement, createContext, useContext, useState } from "react";
 import { createPortal } from "react-dom";
+import { HiXMark } from "react-icons/hi2";
 import styled from "styled-components";
 
-import { HiXMark } from "react-icons/hi2";
+import { useOutsideClick } from "../hooks/useOutsideClick";
 
 const StyledModal = styled.div`
   position: fixed;
@@ -52,18 +56,54 @@ const Button = styled.button`
   }
 `;
 
-function Modal({ children, onClose }) {
-  return createPortal(
-    <Overlay>
-      <StyledModal>
-        <Button onClick={onClose}>
-          <HiXMark />
-        </Button>
-        {children}
-      </StyledModal>
-    </Overlay>,
-    document.body
+const ModalContext = createContext();
+
+function Modal({ children }) {
+  const [openName, setOpenName] = useState("");
+
+  const close = () => setOpenName("");
+  const open = (name) => setOpenName(name);
+
+  return (
+    <ModalContext.Provider value={{ openName, open, close }}>
+      {children}
+    </ModalContext.Provider>
   );
 }
+
+function Open({ children, opens: opensWindowName }) {
+  const { open } = useContext(ModalContext);
+
+  return cloneElement(children, {
+    onClick: () => open(opensWindowName), // Passing the onClick handler to the child component as we cannot pass it where the Modal component is used
+  });
+}
+
+function Window({ children, name }) {
+  const { openName, close } = useContext(ModalContext);
+
+  const ref = useOutsideClick(close);
+
+  if (openName !== name) return null;
+
+  return createPortal(
+    <Overlay>
+      <StyledModal ref={ref}>
+        <Button onClick={close}>
+          <HiXMark />
+        </Button>
+        <div>
+          {cloneElement(children, {
+            onCloseModal: close, // Pass a prop to the child component for the form styling
+          })}
+        </div>
+      </StyledModal>
+    </Overlay>,
+    document.body // DOM node where the modal will be rendered
+  );
+}
+
+Modal.Open = Open;
+Modal.Window = Window;
 
 export default Modal;

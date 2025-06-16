@@ -51,6 +51,7 @@ function CreateCabinForm({ cabinToEdit = {}, onCloseModal }) {
       );
   }
 
+  // eslint-disable-next-line no-unused-vars
   function onError(errors) {
     // console.log(errors);
   }
@@ -146,7 +147,7 @@ function CreateCabinForm({ cabinToEdit = {}, onCloseModal }) {
         <Button
           variation="secondary"
           type="reset"
-          onClick={() => onCloseModal?.()}
+          onClick={() => onCloseModal?.()} // Optionally call onCloseModal, as we are not ALWAYS sure whether this form is in a modal or not.
         >
           Cancel
         </Button>
