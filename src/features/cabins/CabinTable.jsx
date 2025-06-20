@@ -5,6 +5,7 @@ import CabinRow from "./CabinRow";
 import Table from "../../ui/Table";
 import Menus from "../../ui/Menus";
 import Spinner from "../../ui/Spinner";
+import Empty from "../../ui/Empty";
 
 function CabinTable() {
   const { isLoading, cabins } = useCabins();
@@ -30,6 +31,10 @@ function CabinTable() {
   const sortedCabins = filteredCabins?.sort((a, b) => {
     return (a[field] - b[field]) * modifier;
   });
+
+  if (!sortedCabins || sortedCabins.length === 0) {
+    return <Empty resourceName="cabins" />;
+  }
 
   if (isLoading) return <Spinner />;
 

@@ -48,6 +48,8 @@ function BookingRow({
     cabins: { name: cabinName },
   },
 }) {
+  console.log(status);
+
   const statusToTagName = {
     unconfirmed: "blue",
     "checked-in": "green",
@@ -65,7 +67,7 @@ function BookingRow({
 
       <Stacked>
         <span>
-          {isToday(new Date(startDate))
+          {isToday(new Date(startDate)) // Check if the start date is today
             ? "Today"
             : formatDistanceFromNow(startDate)}{" "}
           &rarr; {numNights} night stay
