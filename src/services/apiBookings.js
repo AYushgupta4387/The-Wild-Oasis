@@ -1,12 +1,12 @@
+import { PAGE_SIZE } from "../utils/constans";
 import { getToday } from "../utils/helpers";
 import supabase from "./supabase";
 
-export async function getBookings({ filter, sortBy }) {
-  let query = supabase
-    .from("bookings")
-    .select(
-      "id, created_at, startDate, endDate, numNights, numGuests, status, totalPrice, extrasPrice, cabins(name), guests(fullName, email)"
-    );
+export async function getBookings({ filter, sortBy, page }) {
+  let query = supabase.from("bookings").select(
+    "id, created_at, startDate, endDate, numNights, numGuests, status, totalPrice, extrasPrice, cabins(name), guests(fullName, email)",
+    { count: "exact" } // This will return the total count of rows in the result set, useful to avoid loading all rows just to get the count
+  );
 
   // FILTER with Dynamic query building
   if (filter) {
@@ -21,14 +21,23 @@ export async function getBookings({ filter, sortBy }) {
     });
   }
 
-  const { data, error } = await query;
+  // PAGINATION
+  if (page) {
+    const from = (page - 1) * PAGE_SIZE;
+    const to = page * PAGE_SIZE - 1; // -1 because range is inclusive
+
+    query = query.range(from, to); // 0 to 9 for page 1, 10 to 19 for page 2, etc.
+  }
+
+  // const { data, error } = await query;
+  const { data, error, count } = await query;
 
   if (error) {
     console.error(error);
     throw new Error("Bookings could not get loaded");
   }
 
-  return data;
+  return { data, count };
 }
 
 export async function getBooking(id) {
