@@ -45,7 +45,7 @@ export async function getBooking(id) {
     .from("bookings")
     .select("*, cabins(*), guests(*)")
     .eq("id", id)
-    .single();
+    .single(); // Grab the single booking object from the array
 
   if (error) {
     console.error(error);
@@ -106,6 +106,7 @@ export async function getStaysTodayActivity() {
     console.error(error);
     throw new Error("Bookings could not get loaded");
   }
+
   return data;
 }
 
@@ -121,6 +122,7 @@ export async function updateBooking(id, obj) {
     console.error(error);
     throw new Error("Booking could not be updated");
   }
+
   return data;
 }
 
@@ -132,5 +134,6 @@ export async function deleteBooking(id) {
     console.error(error);
     throw new Error("Booking could not be deleted");
   }
+
   return data;
 }
