@@ -6,21 +6,23 @@ export const login = async function ({ email, password }) {
     password,
   });
 
-  if (error) {
-    throw new Error(error.message);
-  }
+  if (error) throw new Error(error.message);
 
   return data;
 };
 
 export async function getCurrentUser() {
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  // Get the current user session from local storage
+  const { data: session } = await supabase.auth.getSession();
+  if (!session.session) return null;
 
-  if (!user) {
-    throw new Error("No authenticated user found");
-  }
+  // Get user details from supabase if the current session is valid
+  const { data, error } = await supabase.auth.getUser();
+  if (error) throw new Error(error.message);
+  return data?.user;
+}
 
-  return user;
+export async function logout() {
+  const { error } = await supabase.auth.signOut();
+  if (error) throw new Error(error.message);
 }
