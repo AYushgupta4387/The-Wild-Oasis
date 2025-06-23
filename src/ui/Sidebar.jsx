@@ -2,7 +2,6 @@ import styled from "styled-components";
 
 import Logo from "./Logo";
 import MainNav from "./MainNav";
-import Uploader from "../data/Uploader";
 
 const StyledSidebar = styled.aside`
   background-color: var(--color-grey-0);
@@ -19,9 +18,6 @@ function Sidebar() {
     <StyledSidebar>
       <Logo />
       <MainNav />
-
-      {/* <Uploader /> is a component that uploads sample data to the database. It is not used in production. */}
-      <Uploader />
     </StyledSidebar>
   );
 }

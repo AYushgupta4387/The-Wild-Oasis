@@ -12,6 +12,7 @@ export function useLogin() {
     mutationFn: ({ email, password }) => loginApi({ email, password }),
 
     onSuccess: (user) => {
+      // Manually setting the query data after logging in successfully so that after login, the ProtectedRoute doesn't call the getUser Function, therefore avoiding an extra call to supabase.
       queryClient.setQueryData(["user"], user.user);
       navigate("/dashboard", { replace: true });
     },

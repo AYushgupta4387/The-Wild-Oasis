@@ -18,7 +18,7 @@ function LoginForm() {
     if (!email || !password) return;
 
     login(
-      { email, password },
+      { email, password }, // arguments
       {
         onSettled: () => {
           setEmail("");
