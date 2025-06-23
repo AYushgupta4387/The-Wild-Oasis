@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { useUser } from "../features/authentication/useUser";
-import { Spinner } from "../ui/Spinner";
+import Spinner from "../ui/Spinner";
 
 const FullPage = styled.div`
   height: 100vh;
